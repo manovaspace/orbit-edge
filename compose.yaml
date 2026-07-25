@@ -1,0 +1,123 @@
+# Orbit Edge — canonical self-host / offline stack
+#
+#   cp .env.example .env    # set JWT_SECRET (openssl rand -hex 32)
+#   docker compose up -d --build
+#   ./scripts/pin-images.sh # record digests for air-gap / rollback
+#
+# Password login works out of the box. OTP emails appear in Mailpit (:8025).
+# Do not add client apps or staff infra (staff SSO, private forges, or prod reverse proxies) here.
+
+name: orbit-edge
+
+services:
+  postgres:
+    image: postgres:18.4-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-orbit}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-orbit}
+      POSTGRES_DB: postgres
+    volumes:
+      - orbit_edge_pg:/var/lib/postgresql/data
+      - ./postgres/init-databases.sql:/docker-entrypoint-initdb.d/01-init-databases.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-orbit}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [edge]
+
+  redis:
+    image: redis:8.8.0-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [edge]
+
+  mailpit:
+    image: axllent/mailpit:v1.30.3
+    restart: unless-stopped
+    ports:
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+    networks: [edge]
+
+  notifications:
+    image: ${ORBIT_NOTIFICATIONS_IMAGE:-ghcr.io/manovaspace/orbit-notifications:edge}
+    build:
+      context: .
+      dockerfile: docker/notifications.Dockerfile
+      args:
+        REF: ${ORBIT_NOTIFICATIONS_REF:-main}
+    restart: unless-stopped
+    environment:
+      DEPLOYMENT_ENVIRONMENT: ${DEPLOYMENT_ENVIRONMENT:-production}
+      DATABASE_URL: postgres://${POSTGRES_USER:-orbit}:${POSTGRES_PASSWORD:-orbit}@postgres:5432/notifications?sslmode=disable
+      GRPC_PORT: "10110"
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_FROM: ${SMTP_FROM:-noreply@example.com}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    networks: [edge]
+
+  auth:
+    image: ${ORBIT_AUTH_IMAGE:-ghcr.io/manovaspace/orbit-auth:edge}
+    build:
+      context: .
+      dockerfile: docker/auth.Dockerfile
+      args:
+        REF: ${ORBIT_AUTH_REF:-main}
+    restart: unless-stopped
+    environment:
+      DEPLOYMENT_ENVIRONMENT: ${DEPLOYMENT_ENVIRONMENT:-production}
+      DATABASE_URL: postgres://${POSTGRES_USER:-orbit}:${POSTGRES_PASSWORD:-orbit}@postgres:5432/auth?sslmode=disable
+      NOTIFICATIONS_GRPC_ADDR: notifications:10110
+      GRPC_PORT: "10100"
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      notifications:
+        condition: service_started
+    networks: [edge]
+
+  gateway:
+    image: ${ORBIT_GATEWAY_IMAGE:-ghcr.io/manovaspace/orbit-api-gateway:edge}
+    build:
+      context: .
+      dockerfile: docker/gateway.Dockerfile
+      args:
+        REF: ${ORBIT_GATEWAY_REF:-main}
+    restart: unless-stopped
+    ports:
+      - "${GATEWAY_HTTP_PORT:-10120}:10120"
+      - "${GATEWAY_HEALTH_PORT:-10121}:10121"
+    environment:
+      DEPLOYMENT_ENVIRONMENT: ${DEPLOYMENT_ENVIRONMENT:-production}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      AUTH_GRPC_ADDR: auth:10100
+      REDIS_ADDR: redis:6379
+      ORBIT_INTERNAL_TOKEN: ${ORBIT_INTERNAL_TOKEN:-}
+      RATE_LIMIT_TRUST_PROXY: ${RATE_LIMIT_TRUST_PROXY:-false}
+      HTTP_PORT: "10120"
+      HEALTH_PORT: "10121"
+    depends_on:
+      auth:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks: [edge]
+
+networks:
+  edge:
+    driver: bridge
+
+volumes:
+  orbit_edge_pg:
