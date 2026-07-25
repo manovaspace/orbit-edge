@@ -11,7 +11,7 @@ RUN go get github.com/manovaspace/orbit-auth@main \
 	&& go mod tidy \
 	&& CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /gateway ./cmd/gateway
 
-FROM alpine:3.21
+FROM alpine:3.24
 RUN apk add --no-cache ca-certificates
 WORKDIR /app
 COPY --from=builder /gateway /app/gateway

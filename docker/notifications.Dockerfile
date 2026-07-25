@@ -9,7 +9,7 @@ RUN go get github.com/manovaspace/orbit-observability@main \
 	&& go mod tidy \
 	&& CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /notifications ./cmd/notifications
 
-FROM alpine:3.21
+FROM alpine:3.24
 RUN apk add --no-cache ca-certificates
 WORKDIR /app
 COPY --from=builder /notifications /app/notifications
