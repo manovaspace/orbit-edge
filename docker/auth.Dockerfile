@@ -13,7 +13,7 @@ RUN go get github.com/manovaspace/orbit-notifications@main \
 	&& go mod tidy \
 	&& CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /auth ./cmd/auth
 
-FROM alpine:3.21
+FROM alpine:3.24
 RUN apk add --no-cache ca-certificates
 WORKDIR /app
 COPY --from=builder /auth /app/auth
