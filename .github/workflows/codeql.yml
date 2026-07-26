@@ -1,3 +1,4 @@
+# CodeQL for compose/scripts meta-repo (no Go sources).
 name: CodeQL
 
 on:
@@ -6,7 +7,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: "17 5 * * 2"
+    - cron: "17 5 * * 1"
 
 permissions:
   contents: read
