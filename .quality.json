@@ -1,0 +1,10 @@
+{
+	"version": 1,
+	"checks": [
+		{
+			"name": "edge Compose and shell lint",
+			"kind": "static",
+			"argv": ["bash", "scripts/quality-check.sh"]
+		}
+	]
+}
