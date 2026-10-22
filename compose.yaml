@@ -42,7 +42,7 @@ services:
     image: axllent/mailpit:v1.30.3
     restart: unless-stopped
     ports:
-      - "${MAILPIT_UI_PORT:-8025}:8025"
+      - "${MAILPIT_UI_PORT:-10825}:8025"
     networks: [edge]
 
   notifications:
