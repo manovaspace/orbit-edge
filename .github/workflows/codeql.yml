@@ -1,13 +1,11 @@
 # CodeQL for compose/scripts meta-repo (no Go sources).
 name: CodeQL
 
+# CodeQL runs weekly and on demand only.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   schedule:
     - cron: "17 5 * * 1"
+  workflow_dispatch:
 
 permissions:
   contents: read
