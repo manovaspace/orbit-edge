@@ -1,3 +1,11 @@
+---
+read_with:
+  - handbook/docs/orbit/architecture/module-catalog.md
+  - handbook/docs/orbit/decisions/021-orbit-toolkit-mit-public.md
+  - handbook/docs/orbit/guides/orbit-oss-edge-implementation-plan.md
+  - handbook/docs/orbit/guides/platform-dev-quickstart.md
+---
+
 # orbit-edge
 
 Canonical offline/self-host compose for Orbit (auth + notifications + gateway). MIT — `github.com/manovaspace/orbit-edge`.
