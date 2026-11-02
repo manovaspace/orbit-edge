@@ -11,5 +11,5 @@ trap 'rm -rf -- "$scratch"' EXIT
 cp "$ROOT/.env.example" "$scratch/env"
 env -i PATH="$PATH" HOME="$scratch" JWT_SECRET=ci-only-not-for-production-use-32b \
   docker compose --project-directory "$ROOT" --env-file "$scratch/env" -f "$ROOT/compose.yaml" config >/dev/null
-shellcheck "$ROOT"/scripts/*.sh
+shellcheck "$ROOT"/scripts/*.sh "$ROOT"/scripts/tests/*.sh
 echo "Static Compose/shell checks passed; deployment credentials and runtime remain unverified."
