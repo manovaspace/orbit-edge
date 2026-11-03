@@ -81,6 +81,11 @@ services:
       NOTIFICATIONS_GRPC_ADDR: notifications:10110
       GRPC_PORT: "10100"
       JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      # SaaS settings — defaults preserve existing deployments.
+      AUTH_SIGNUP: ${AUTH_SIGNUP:-off}
+      AUTH_AUTO_SELECT_SINGLE_ORG: ${AUTH_AUTO_SELECT_SINGLE_ORG:-true}
+      BUS_TRANSPORT: ${BUS_TRANSPORT:-inproc}
+      BUS_NATS_URL: ${BUS_NATS_URL:-}
     depends_on:
       postgres:
         condition: service_healthy

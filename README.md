@@ -24,6 +24,20 @@ curl -sf http://127.0.0.1:10121/healthz
 
 Auth is gRPC-only inside the network; call auth via the gateway REST routes.
 
+## SaaS settings
+
+Defaults keep the offline / self-host posture unchanged. None of these values is a secret.
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `AUTH_SIGNUP` | `off` | `open` enables self-serve sign-up with email OTP (ADR-016 amendment). |
+| `AUTH_AUTO_SELECT_SINGLE_ORG` | `true` | Add the `org` claim at login when a user has exactly one active membership. |
+| `BUS_TRANSPORT` | `inproc` | Lifecycle event transport: `inproc` (default) or `nats` (production target, with `BUS_NATS_URL`). |
+| `BUS_NATS_URL` | unset | NATS endpoint when `BUS_TRANSPORT=nats`; NATS is not bundled with this compose. |
+
+Enabling sign-up also needs the gateway rate limits (G1, merged) and the `signup_verify`
+template in orbit-notifications (merged).
+
 ## Pin images / air-gap
 
 ```bash
