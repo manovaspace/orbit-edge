@@ -5,8 +5,7 @@ ARG REF=main
 WORKDIR /src
 RUN git clone --depth=1 --branch "${REF}" https://github.com/manovaspace/orbit-notifications.git . \
 	|| (git clone https://github.com/manovaspace/orbit-notifications.git . && git checkout "${REF}")
-RUN go get github.com/manovaspace/orbit-observability@main \
-	&& go mod tidy \
+RUN go mod tidy \
 	&& CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /notifications ./cmd/notifications
 
 FROM alpine:3.24
