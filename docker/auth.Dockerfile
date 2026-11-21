@@ -9,7 +9,6 @@ RUN git clone --depth=1 --branch "${REF}" https://github.com/manovaspace/orbit-a
 	|| (git clone https://github.com/manovaspace/orbit-auth.git . && git checkout "${REF}")
 # Refresh module pins after force-pushes on dependency repos
 RUN go get github.com/manovaspace/orbit-notifications@main \
-	&& go get github.com/manovaspace/orbit-observability@main \
 	&& go mod tidy \
 	&& CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /auth ./cmd/auth
 
