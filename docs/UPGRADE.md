@@ -13,7 +13,7 @@ Orbit Edge pins **application** images via `images.lock` (image IDs) after `./sc
 5. Rebuild and restart:  
    `docker compose --env-file .env up -d --build`
 6. Re-pin: `./scripts/pin-images.sh` and commit `images.lock` in your private deployment overlay (not required upstream).
-7. Smoke-test: `curl -sf http://127.0.0.1:10121/healthz`
+7. Smoke-test: `curl -sf http://127.0.0.1:10014/healthz`
 
 ## Rollback
 

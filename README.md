@@ -13,14 +13,14 @@ This is the one compose entry operators should use. Keep client apps and staff i
 cp .env.example .env
 # set JWT_SECRET — e.g. openssl rand -hex 32
 docker compose --env-file .env up -d --build
-curl -sf http://127.0.0.1:10121/healthz
+curl -sf http://127.0.0.1:10014/healthz
 ```
 
 | Port | Service |
 | --- | --- |
-| `10120` | API gateway HTTP |
-| `10121` | Gateway health |
-| `8025` | Mailpit UI (OTP email sink) |
+| `10001` | API gateway HTTP |
+| `10014` | Gateway health |
+| `10025` | Mailpit UI (OTP email sink) |
 
 Auth is gRPC-only inside the network; call auth via the gateway REST routes.
 

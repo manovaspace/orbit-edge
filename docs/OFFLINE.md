@@ -27,11 +27,11 @@ cp .env.example .env
 # set JWT_SECRET (and change POSTGRES_PASSWORD)
 # set ORBIT_*_IMAGE from images.lock if present
 docker compose --env-file .env up -d
-curl -sf http://127.0.0.1:10121/healthz
+curl -sf http://127.0.0.1:10014/healthz
 ```
 
-Mailpit UI (OTP inspection): `http://127.0.0.1:8025`  
-Gateway HTTP: `http://127.0.0.1:10120`
+Mailpit UI (OTP inspection): `http://127.0.0.1:10025`  
+Gateway HTTP: `http://127.0.0.1:10001`
 
 ## Password login (recommended offline)
 
