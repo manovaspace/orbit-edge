@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0](https://github.com/manovaspace/orbit-edge/compare/v0.2.0...v0.3.0) (2026-11-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* the gateway moved from 10120/10121 to 10001/10014 and is no longer published on all interfaces. Set GATEWAY_HTTP_PORT and GATEWAY_HEALTH_PORT to keep the old host ports.
+
+### Features
+
+* publish the gateway on registry ports, loopback only ([#32](https://github.com/manovaspace/orbit-edge/issues/32)) ([7aa1d35](https://github.com/manovaspace/orbit-edge/commit/7aa1d35a24501ee38c00d6959c5c7afa16026ca1))
+
+
+### Code Refactoring
+
+* drop references to the retired Orbit libraries; use orbit-kit ([#30](https://github.com/manovaspace/orbit-edge/issues/30)) ([b1005bd](https://github.com/manovaspace/orbit-edge/commit/b1005bdf1c897475709e61954c53c1b07109fca6))
+
 ## [0.2.0](https://github.com/manovaspace/orbit-edge/compare/v0.1.0...v0.2.0) (2026-11-03)
 
 
